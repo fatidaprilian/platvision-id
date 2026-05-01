@@ -1,0 +1,52 @@
+name: platvision-id
+
+services:
+  development:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5000:5000"
+    environment:
+      PLATVISION_ENABLE_DEMO_FALLBACK: "true"
+      PLATVISION_MAX_CONTENT_LENGTH: "8388608"
+      DISABLE_MODEL_SOURCE_CHECK: "True"
+    volumes:
+      - ./src:/app/src
+      - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  production:
+    build:
+      context: .
+      target: production
+    ports:
+      - "5000:8000"
+    environment:
+      PLATVISION_ENABLE_DEMO_FALLBACK: "true"
+      PLATVISION_MAX_CONTENT_LENGTH: "8388608"
+      DISABLE_MODEL_SOURCE_CHECK: "True"
+    volumes:
+      - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - production
+
+  test:
+    build:
+      context: .
+      target: test
+    environment:
+      PLATVISION_ENABLE_DEMO_FALLBACK: "true"
+    profiles:
+      - test

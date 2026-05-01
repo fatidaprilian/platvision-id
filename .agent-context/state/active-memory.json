@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "active-memory-v1",
+  "snapshotPurpose": "compact-cross-session-continuity",
+  "updatePolicy": {
+    "writeWhen": "natural-task-boundary",
+    "overwriteOnlyWithCurrentRepoEvidence": true,
+    "preserveUserOwnedContent": true
+  },
+  "project": {
+    "name": "platvision-id",
+    "currentFocus": "Dockerized Flask ALPR demo using Ultralytics YOLO and PaddleOCR adapters.",
+    "durableFacts": [
+      "Runtime is Python Flask with a feature-oriented ALPR module under src/platvision_id/modules/alpr.",
+      "Docker is the recommended demo path because YOLO/PyTorch/PaddleOCR/PaddlePaddle dependencies are heavy.",
+      "The app prefers models/best.pt when present and otherwise uses a controlled demo fallback crop instead of depending on generic YOLO downloads.",
+      "The Docker ML lane pins paddleocr==3.3.3 with paddlepaddle==3.2.0 to avoid a Paddle CPU oneDNN runtime failure seen with newer PaddlePaddle."
+    ]
+  },
+  "progress": {
+    "lastAchievements": [
+      "Created required project docs, API contract, design contract, Flask app scaffold, ALPR pipeline adapters, UI, tests, Dockerfile, compose.yaml, and Docker runbook.",
+      "Split Docker lanes into development, production, and lightweight test targets; built all three images successfully.",
+      "Fixed the image recognition 500 error by pinning compatible OCR dependencies, returning UNREADABLE instead of crashing on OCR runtime failure, and using demo fallback when no trained YOLO plate model exists."
+    ],
+    "pendingIssues": [
+      "Accurate plate localization requires a trained license plate YOLO model at models/best.pt."
+    ],
+    "nextBestActions": [
+      "Retry browser upload at http://localhost:5000 and confirm the UI shows a result instead of server error.",
+      "Place a trained license plate detector at models/best.pt before evaluating detection accuracy."
+    ],
+    "validationState": [
+      "docker compose config passed.",
+      "docker compose --profile test config passed.",
+      "python3 -m compileall src tests passed.",
+      "docker compose --profile test run --rm test passed with 9 tests.",
+      "docker compose build --pull development passed with CPU PyTorch wheels.",
+      "docker compose --profile production build production passed.",
+      "Development container is running and Docker healthcheck is healthy.",
+      "In-container recognition smoke test returned 200 with normalizedPlate B 2156 TOR using demo-fallback and PaddleOCR."
+    ]
+  },
+  "designContinuity": {
+    "visualLanguageContinuity": "opt-in-only",
+    "currentConceptualAnchor": "Vehicle inspection lightbox",
+    "forbiddenCarryover": [
+      "prior-project-style-memory",
+      "old-ui-visual-dna-without-user-approval",
+      "generic-dashboard-defaults"
+    ]
+  },
+  "privacy": {
+    "storeSecrets": false,
+    "storeRawChatLogs": false,
+    "redactSensitiveTextBeforeWriting": true
+  },
+  "generatedAt": "2026-04-27T01:58:44.514Z",
+  "lastUpdatedAt": "2026-04-27T12:55:00+07:00"
+}

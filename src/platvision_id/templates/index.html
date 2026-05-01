@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Platvision ID</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">ALPR inspection console</p>
+        <h1 id="page-title">Platvision ID</h1>
+        <p class="summary">
+          Upload a vehicle image, localize the plate with YOLO, read it with OCR,
+          and map the prefix to an Indonesian region.
+        </p>
+      </section>
+
+      <section class="workspace" aria-label="License plate recognition workspace">
+        <form class="upload-panel" id="recognition-form">
+          <label class="drop-zone" for="image-input">
+            <span class="drop-title">Choose vehicle image</span>
+            <span class="drop-copy" id="file-label">JPG, PNG, or WEBP up to 8 MB</span>
+            <input id="image-input" name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+          </label>
+          <div class="preview-frame" data-empty="true">
+            <img id="preview-image" alt="">
+            <span class="preview-empty">Image preview</span>
+          </div>
+          <button class="primary-action" type="submit">Run recognition</button>
+        </form>
+
+        <section class="result-panel" aria-live="polite" aria-busy="false">
+          <div class="result-header">
+            <p class="eyebrow">Recognition result</p>
+            <span class="status-pill" id="status-pill">Ready</span>
+          </div>
+          <output class="plate-readout" id="plate-output">-- ---- ---</output>
+          <dl class="metrics">
+            <div>
+              <dt>Region</dt>
+              <dd id="region-output">Waiting for image</dd>
+            </div>
+            <div>
+              <dt>Confidence</dt>
+              <dd id="confidence-output">-</dd>
+            </div>
+            <div>
+              <dt>Detector</dt>
+              <dd id="detector-output">-</dd>
+            </div>
+          </dl>
+          <div class="notes" id="notes-output">No diagnostics yet.</div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,435 @@
+{
+  "cliVersion": "3.0.40",
+  "generatedAt": "2026-05-01T09:33:53.235Z",
+  "operationMode": "upgrade",
+  "selectedProfile": "balanced",
+  "projectScope": {
+    "key": "both",
+    "label": "Both (frontend + backend)"
+  },
+  "projectTopology": null,
+  "runtimeDecision": {
+    "mode": "agent-decision-required",
+    "explicitStack": null,
+    "detectedStackEvidence": "python.md",
+    "detectedAdditionalStackEvidence": []
+  },
+  "architectureDecision": {
+    "mode": "agent-decision-required",
+    "explicitBlueprint": null,
+    "detectedBlueprintEvidence": null
+  },
+  "selectedStack": null,
+  "selectedAdditionalStacks": [],
+  "selectedBlueprint": null,
+  "selectedAdditionalBlueprints": [],
+  "ruleLoadingPolicy": {
+    "canonicalSource": ".instructions.md",
+    "stackLoadingMode": "lazy",
+    "domainRuleLoadingMode": "lazy",
+    "loadedOnDemand": true,
+    "primaryStack": null,
+    "additionalStacks": [],
+    "agentDecisionRequired": true
+  },
+  "ciGuardrailsEnabled": true,
+  "setupDurationMs": 185,
+  "runtimeEnvironment": {
+    "selected": "linux-wsl",
+    "selectedLabel": "Linux / WSL",
+    "detected": "linux-wsl",
+    "detectedLabel": "Linux / WSL",
+    "detectionSource": "WSL environment markers"
+  },
+  "tokenOptimization": {
+    "schemaVersion": "token-optimization-v1",
+    "enabled": true,
+    "selectedAgent": "copilot",
+    "preferredShellProxy": "native-fallback",
+    "externalProxy": {
+      "detected": false,
+      "version": null,
+      "detectionError": "Unknown external proxy detection error"
+    },
+    "commandRewriteMappings": [
+      {
+        "rawCommand": "ls -la",
+        "optimizedCommand": "rtk ls .",
+        "reason": "Directory listings are grouped and compacted before entering the model context."
+      },
+      {
+        "rawCommand": "tree",
+        "optimizedCommand": "rtk ls .",
+        "reason": "Large trees are summarized without losing high-signal structure."
+      },
+      {
+        "rawCommand": "cat file.ext",
+        "optimizedCommand": "rtk read file.ext",
+        "reason": "File reads keep signatures and relevant lines while trimming boilerplate."
+      },
+      {
+        "rawCommand": "rg pattern .",
+        "optimizedCommand": "rtk grep \"pattern\" .",
+        "reason": "Search hits are grouped and deduplicated for faster reasoning."
+      },
+      {
+        "rawCommand": "git status",
+        "optimizedCommand": "rtk git status",
+        "reason": "Status output is condensed to actionable file changes."
+      },
+      {
+        "rawCommand": "git diff",
+        "optimizedCommand": "rtk git diff",
+        "reason": "Diff noise is trimmed while preserving code-review context."
+      },
+      {
+        "rawCommand": "git log -n 10",
+        "optimizedCommand": "rtk git log -n 10",
+        "reason": "History is converted to compact one-line summaries."
+      },
+      {
+        "rawCommand": "npm test",
+        "optimizedCommand": "rtk test npm test",
+        "reason": "Test results emphasize failures and suppress repetitive pass logs."
+      },
+      {
+        "rawCommand": "npm run build",
+        "optimizedCommand": "rtk err npm run build",
+        "reason": "Build runs return errors and warnings only for quicker remediation."
+      },
+      {
+        "rawCommand": "tsc --noEmit",
+        "optimizedCommand": "rtk tsc",
+        "reason": "TypeScript diagnostics are grouped by file with less repetition."
+      },
+      {
+        "rawCommand": "eslint .",
+        "optimizedCommand": "rtk lint",
+        "reason": "Lint output is grouped by rule and location to reduce token churn."
+      },
+      {
+        "rawCommand": "docker ps",
+        "optimizedCommand": "rtk docker ps",
+        "reason": "Container state is summarized into compact rows."
+      },
+      {
+        "rawCommand": "kubectl get pods",
+        "optimizedCommand": "rtk kubectl pods",
+        "reason": "Kubernetes output is condensed and stable for agent consumption."
+      }
+    ],
+    "outputFoldingStrategy": {
+      "mode": "compact-high-signal-output",
+      "appliesTo": [
+        "shell-command-output",
+        "test-output",
+        "build-output",
+        "diff-output",
+        "log-output"
+      ],
+      "preserveAlways": [
+        "exit-code",
+        "failing-command",
+        "file-and-line",
+        "error-message",
+        "actionable-warning"
+      ],
+      "foldByDefault": [
+        "repeated-success-lines",
+        "large-unchanged-diff-context",
+        "verbose-install-progress",
+        "duplicated-stack-frames",
+        "low-signal-directory-noise"
+      ],
+      "nativeFallback": [
+        "prefer --stat or --name-only before full diff",
+        "prefer focused rg queries before broad file dumps",
+        "prefer failure-focused test reporters when available",
+        "summarize long logs before hydrating full detail"
+      ],
+      "safetyBoundary": [
+        "never hide failing checks",
+        "never drop the command that produced output",
+        "never persist secrets into summaries",
+        "hydrate full output only when the compact summary is insufficient"
+      ]
+    },
+    "generatedAt": "2026-04-27T01:58:44.551Z"
+  },
+  "memoryContinuity": {
+    "schemaVersion": "memory-continuity-v1",
+    "enabled": true,
+    "hydrationMode": "progressive-disclosure",
+    "adapters": [
+      "claude-code",
+      "gemini-cli",
+      "vscode-chat"
+    ],
+    "retrieval": {
+      "sessionStartIndexLimit": 8,
+      "fullHydrationLimit": 2
+    },
+    "privacy": {
+      "redactPrivateTags": true,
+      "redactInlineSensitivePatterns": true
+    },
+    "generatedAt": "2026-04-27T01:58:44.513Z"
+  },
+  "autoDetection": {
+    "detectedStack": "python.md",
+    "detectedAdditionalStacks": [],
+    "detectedBlueprint": null,
+    "detectedAdditionalBlueprints": [],
+    "confidenceLabel": "high",
+    "confidenceScore": 0.96,
+    "confidenceGap": 0.96,
+    "detectionReasoning": "Top signal Python won with confidence 0.96 from markers: pyproject.toml.",
+    "rankedCandidates": [
+      {
+        "stackFileName": "python.md",
+        "confidenceScore": 0.96,
+        "evidence": [
+          "pyproject.toml"
+        ]
+      }
+    ],
+    "evidence": [
+      "pyproject.toml"
+    ],
+    "detectionTransparency": {
+      "declaredAt": "2026-05-01T09:33:53.090Z",
+      "declarationType": "existing-project",
+      "declarationShown": true,
+      "detectionSummary": "This folder looks like Python with high confidence based on pyproject.toml. Confidence gap: 0.96.",
+      "activeRulesSummary": {
+        "canonicalSource": ".instructions.md",
+        "compiledRulebook": ".agent-instructions.md",
+        "legacyThinAdapters": [
+          ".cursorrules",
+          ".windsurfrules",
+          ".clauderc"
+        ],
+        "generatedBridgeAdapters": [
+          "AGENTS.md",
+          "CLAUDE.md",
+          "GEMINI.md",
+          ".cursor/rules/agentic-senior-core.mdc",
+          ".windsurf/rules/agentic-senior-core.md",
+          ".github/copilot-instructions.md",
+          ".github/instructions/agentic-senior-core.instructions.md",
+          ".gemini/instructions.md"
+        ],
+        "stackLoadingMode": "lazy",
+        "domainRuleLoadingMode": "lazy",
+        "selectedProfile": "balanced",
+        "selectedProfileDisplayName": "Balanced",
+        "blockingSeverities": [
+          "critical",
+          "high"
+        ],
+        "ciGuardrailsEnabled": true
+      },
+      "majorConstraints": [
+        "Preserve existing project markers and avoid forced stack migration.",
+        "Use runtime markers as evidence only unless the user already recorded an explicit runtime constraint.",
+        "Upgrade keeps prior explicit onboarding constraints but does not create new stack or blueprint decisions."
+      ],
+      "quickConfirmation": {
+        "offered": false,
+        "response": "upgrade-auto",
+        "source": "upgrade-assistant"
+      },
+      "decision": {
+        "mode": "upgrade-auto",
+        "selectedStackFileName": "agent-decision-runtime.md",
+        "selectedBlueprintFileName": "agent-decision-architecture.md"
+      }
+    },
+    "uiScope": {
+      "isUiScopeLikely": true,
+      "signalReasons": [
+        "onboarding project scope: both",
+        "ui markers: src"
+      ],
+      "workspaceUiEntries": [],
+      "frontendEvidenceMetrics": {
+        "scannedFileCount": 2,
+        "hardcodedColorCount": 27,
+        "propDrillingCandidateCount": 0,
+        "mediaQueryCount": 3,
+        "tailwindBreakpointUsageCount": 0,
+        "arbitraryBreakpointCount": 0,
+        "uniqueMediaWidthCount": 2,
+        "structuredClassAttributeCount": 0,
+        "boundClassExpressionCount": 0,
+        "inlineStyleObjectCount": 0,
+        "inlineStyleBindingCount": 0,
+        "inlineStyleTokenBypassCount": 0
+      },
+      "designEvidenceSummary": {
+        "summaryVersion": "v1",
+        "source": "lightweight-static-scan",
+        "scanRootRelativePaths": [
+          "src"
+        ],
+        "scannedFileCount": 2,
+        "cssVariables": {
+          "definitionCount": 14,
+          "referenceCount": 25,
+          "sampleNames": [
+            "color-page",
+            "color-surface",
+            "color-surface-strong",
+            "color-text",
+            "color-muted",
+            "color-line",
+            "color-accent",
+            "color-accent-strong",
+            "color-success",
+            "color-error",
+            "color-info",
+            "shadow-panel"
+          ],
+          "categoryCounts": {
+            "color": 11,
+            "spacing": 0,
+            "radius": 2,
+            "shadow": 1,
+            "typography": 0,
+            "motion": 0,
+            "other": 0
+          }
+        },
+        "colors": {
+          "hardcodedCount": 27,
+          "kindCounts": {
+            "hex": 21,
+            "rgb": 6,
+            "hsl": 0,
+            "oklch": 0,
+            "other": 0
+          },
+          "sampleValues": [
+            "#f4f2ed",
+            "#fffdf8",
+            "#232520",
+            "#1d211d",
+            "#656b60",
+            "#c9c3b5",
+            "#d88c23",
+            "#a85f08",
+            "#28734b",
+            "#b13a32",
+            "#245f8f",
+            "rgb(40 39 35 / 14%)"
+          ]
+        },
+        "spacing": {
+          "rawValueCount": 32,
+          "sampleValues": [
+            "100vh",
+            "40px",
+            "760px",
+            "28px",
+            "680px",
+            "20px",
+            "16px",
+            "18px",
+            "120px",
+            "4px",
+            "1px",
+            "360px"
+          ]
+        },
+        "radius": {
+          "rawValueCount": 1,
+          "sampleValues": [
+            "999px"
+          ]
+        },
+        "shadow": {
+          "rawValueCount": 1,
+          "sampleValues": [
+            "var(--shadow-panel)"
+          ]
+        },
+        "typography": {
+          "fontFamilyCount": 2,
+          "fontSizeCount": 5,
+          "lineHeightCount": 4,
+          "letterSpacingCount": 0,
+          "fontFamilySamples": [
+            "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+            "SFMono-Regular\", Consolas, \"Liberation Mono\", monospace"
+          ],
+          "fontSizeSamples": [
+            "0.76rem",
+            "1.02rem",
+            "0.92rem",
+            "0.82rem",
+            "0.72rem"
+          ],
+          "lineHeightSamples": [
+            "0.92",
+            "1.6",
+            "1",
+            "1.5"
+          ],
+          "letterSpacingSamples": []
+        },
+        "motion": {
+          "transitionCount": 3,
+          "animationCount": 2,
+          "durationCount": 7,
+          "durationSamples": [
+            "160ms",
+            "520ms",
+            "120ms",
+            "1ms"
+          ]
+        },
+        "tailwind": {
+          "breakpointUsageCount": 0,
+          "arbitraryBreakpointCount": 0,
+          "utilityFamilyCounts": {},
+          "utilityFamilySamples": []
+        },
+        "componentInventory": {
+          "componentFileCount": 0,
+          "pageFileCount": 0,
+          "layoutFileCount": 0,
+          "surfaceFileSamples": []
+        },
+        "structuredInspection": {
+          "mode": "attribute-aware-static-scan",
+          "classAttributeCount": 0,
+          "boundClassExpressionCount": 0,
+          "inlineStyleObjectCount": 0,
+          "inlineStyleBindingCount": 0,
+          "classAttributeSamples": [],
+          "inlineStyleSamples": [],
+          "utilityFamilyCounts": {},
+          "utilityFamilySamples": [],
+          "inlineTokenBypassSignals": {
+            "hardcodedColorCount": 0,
+            "rawSpacingCount": 0,
+            "rawRadiusCount": 0,
+            "rawShadowCount": 0,
+            "cssVariableReferenceCount": 0
+          }
+        },
+        "tokenBypassSignals": {
+          "hardcodedColorCount": 27,
+          "rawSpacingCount": 32,
+          "rawRadiusCount": 1,
+          "rawShadowCount": 1,
+          "inlineHardcodedColorCount": 0,
+          "inlineRawSpacingCount": 0,
+          "inlineRawRadiusCount": 0,
+          "inlineRawShadowCount": 0,
+          "inlineCssVariableReferenceCount": 0
+        }
+      }
+    }
+  }
+}

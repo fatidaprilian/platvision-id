@@ -1,0 +1,168 @@
+{
+  "mode": "project-specific",
+  "status": "refined-for-alpr-demo",
+  "project": {
+    "name": "platvision-id",
+    "domain": "Automatic License Plate Recognition demo",
+    "runtimeConstraint": "Python Flask with Ultralytics YOLO and PaddleOCR adapters",
+    "architectureConstraint": "single deployable Flask monolith with feature-oriented ALPR module"
+  },
+  "repoEvidence": {
+    "designEvidenceSummary": "No application UI existed before this implementation. The design contract is derived from the requested ALPR upload and recognition workflow."
+  },
+  "motionPaletteDecision": {
+    "productCategorySignal": "inspection workflow",
+    "densityDecisionSource": "Short demo task with one upload action, one recognition result, and compact diagnostics.",
+    "requiredInteractionStates": [
+      "default",
+      "hover",
+      "focus-visible",
+      "active",
+      "disabled",
+      "loading",
+      "empty",
+      "error",
+      "success",
+      "transition"
+    ],
+    "paletteAutopilotRisks": [
+      "dark-slate-default",
+      "cream-beige-default",
+      "purple-blue-gradient-default",
+      "monochrome-template-default",
+      "uniform-card-surface-default"
+    ],
+    "spatialDecision": "3D and canvas are unnecessary because the product task is image upload, OCR feedback, and result inspection."
+  },
+  "conceptualAnchor": {
+    "name": "Vehicle inspection lightbox",
+    "anchorReference": "industrial vehicle inspection lightbox with scan lane and measured readout",
+    "agentResearchMode": "synthesized from current product brief and official library documentation",
+    "sourceDomain": "industrial inspection instrumentation",
+    "specificReferencePoint": "matte inspection bench, illuminated scan lane, and calibrated measurement readout",
+    "rationale": "The user needs to inspect an uploaded vehicle image, understand where the plate was localized, and trust the OCR confidence and fallback notes.",
+    "signatureMotion": "A short horizontal scan-line reveal runs across the preview and result surface after recognition; reduced motion switches to an immediate state update.",
+    "typographicDecision": "Plate text uses a monospace readout style, labels use compact sans-serif metadata, and body text stays plain for clarity.",
+    "derivedTokenLogic": {
+      "morphology": "Small-radius panels, firm borders, and lane-like horizontal emphasis derive from the lightbox bench.",
+      "motion": "Scan-line timing and state transitions derive from inspection equipment passing over a target."
+    },
+    "visualRiskBudget": "Moderate distinctiveness with high readability and no decorative dashboard chrome.",
+    "motionRiskBudget": "Light motion only; no continuous animation after the result is shown.",
+    "cohesionChecks": [
+      "no-dashboard-mental-model",
+      "motion-derived-from-anchor",
+      "fallback-state-visible"
+    ]
+  },
+  "derivedTokenLogic": {
+    "anchorReference": "industrial vehicle inspection lightbox with scan lane and measured readout",
+    "colorDerivationSource": "Workbench neutrals, amber inspection light, green pass, red error, and blue informational roles derive from physical inspection equipment states.",
+    "spacingDerivationSource": "A compact 8px base grid with wider scan lanes derives from measured lightbox layout.",
+    "typographyDerivationSource": "Monospace plate readouts and compact metadata derive from calibrated instrument displays.",
+    "motionDerivationSource": "Short horizontal scan reveals derive from inspection light passing across the target.",
+    "validationRule": "Every color, spacing, typography, and motion token must map to the inspection lightbox anchor."
+  },
+  "libraryResearchStatus": "verified",
+  "libraryDecisions": [
+    {
+      "library": "Flask",
+      "purpose": "Server-rendered page and upload API.",
+      "verifiedAt": "2026-04-27",
+      "sourceUrl": "https://flask.palletsprojects.com/en/stable/patterns/fileuploads/",
+      "stableVersion": "3.1.x documentation",
+      "fallbackIfUnavailable": "Use Python standard library HTTP only for tests; not recommended for the demo app."
+    },
+    {
+      "library": "Ultralytics",
+      "purpose": "YOLO-family object detection, defaulting to YOLO26 demo weights when no local plate model exists.",
+      "verifiedAt": "2026-04-27",
+      "sourceUrl": "https://docs.ultralytics.com/",
+      "stableVersion": "YOLO26 documentation",
+      "fallbackIfUnavailable": "Keep detector injectable and run tests with a fake detector."
+    },
+    {
+      "library": "PaddleOCR",
+      "purpose": "OCR for cropped license plate images.",
+      "verifiedAt": "2026-04-27",
+      "sourceUrl": "https://www.paddleocr.ai/v3.1.0/en/quick_start.html",
+      "stableVersion": "PaddleOCR 3.x documentation",
+      "fallbackIfUnavailable": "Keep OCR injectable and run tests with a fake OCR reader."
+    }
+  ],
+  "tokenSystem": {
+    "sourceOfTruth": "docs/design-intent.json",
+    "taxonomyOrder": [
+      "primitive",
+      "semantic",
+      "component"
+    ],
+    "primitiveColorSpace": "OKLCH",
+    "requireSemanticAliases": true,
+    "componentTokensConsumeSemantic": true,
+    "forbidRawHexOutsidePrimitives": false
+  },
+  "colorRoles": {
+    "surface": "matte workbench neutral",
+    "surfaceRaised": "light inspection panel",
+    "text": "high contrast graphite",
+    "mutedText": "calibrated metadata gray",
+    "accent": "amber scan light",
+    "success": "inspection pass green",
+    "error": "fault red",
+    "info": "measurement blue"
+  },
+  "typography": {
+    "display": "bold compact sans-serif",
+    "body": "readable sans-serif",
+    "metadata": "small uppercase sans-serif",
+    "data": "monospace plate readout"
+  },
+  "spacing": {
+    "baseGridPx": 8,
+    "densityMode": "compact inspection workflow",
+    "exceptions": "Preview and result areas get larger vertical rhythm to make uploaded imagery readable."
+  },
+  "motion": {
+    "durationMs": {
+      "quick": 120,
+      "scan": 520,
+      "panel": 220
+    },
+    "easing": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+    "reducedMotion": "Disable scan sweep and use instant opacity/state changes."
+  },
+  "crossViewportAdaptation": {
+    "adaptByRecomposition": true,
+    "touchTargetMinPx": 44,
+    "mutationRules": {
+      "mobile": "Upload first, plate result second, diagnostics disclosed below.",
+      "tablet": "Stack upload and result, keep metrics in a compact row.",
+      "desktop": "Use two primary columns with upload on the left and result inspection on the right."
+    }
+  },
+  "accessibility": {
+    "standard": "WCAG 2.2 AA",
+    "requirements": [
+      "visible focus",
+      "keyboard reachable upload and submit",
+      "status region for loading, success, and errors",
+      "no color-only meaning",
+      "minimum 44px touch targets"
+    ]
+  },
+  "reviewRubric": [
+    "The UI shows fallback state clearly.",
+    "Plate text is visually distinct as data.",
+    "Responsive layout recomposes instead of only shrinking.",
+    "Motion follows the scan-lane anchor and respects reduced motion.",
+    "The interface does not look like a generic dashboard."
+  ],
+  "forbiddenPatterns": [
+    "generic SaaS dashboard chrome",
+    "decorative gradient hero",
+    "large marketing landing page",
+    "uniform card grid",
+    "hiding model fallback limitations"
+  ]
+}

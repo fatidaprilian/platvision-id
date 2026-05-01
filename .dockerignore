@@ -1,0 +1,16 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+*.egg-info
+*.pyc
+*.pyo
+*.pyd
+.env
+.DS_Store
+output
+uploads
+models/*.pt
+models/*.onnx
+models/*.engine
+.agentic-backup

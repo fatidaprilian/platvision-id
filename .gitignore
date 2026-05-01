@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.agentic-backup/
+*.egg-info/
+*.pyc
+*.pyo
+*.pyd
+*.pt
+models/*.onnx
+uploads/
+output/
+.env
+.DS_Store
