@@ -37,6 +37,8 @@ Exit criteria:
 
 ## Phase 2: Dataset Collection
 
+Status: Scaffold ready; dataset not selected yet.
+
 Purpose: prepare a license plate detection dataset for YOLO training.
 
 Candidate source:
@@ -62,8 +64,8 @@ Exit criteria:
 
 - Dataset source and license are recorded.
 - Labels are verified on a small sample.
-- A YOLO dataset YAML exists.
-- Train, validation, and test folders are ready.
+- A YOLO dataset YAML exists. Current scaffold: `datasets/platvision-id.yaml`.
+- Train, validation, and test folders are ready under `datasets/platvision-id/`.
 
 ## Phase 3: Annotation And Cleaning
 
@@ -91,6 +93,8 @@ Exit criteria:
 
 ## Phase 4: YOLO Training
 
+Status: CLI scaffold ready; blocked on dataset.
+
 Purpose: replace the generic demo detector with a trained plate detector.
 
 Tasks:
@@ -113,6 +117,13 @@ Exit criteria:
 - Validation mAP50 is recorded.
 - The app detects plate crops without demo fallback on test images.
 - The demo fallback can be disabled after the trained model is verified.
+
+Training scaffold:
+
+- Dataset config: `datasets/platvision-id.yaml`.
+- Training command: `platvision-train-detector --data datasets/platvision-id.yaml --output models/best.pt`.
+- Training notes: `docs/training/yolo-training.md`.
+- Dataset notes: `docs/training/dataset-notes.md`.
 
 ## Phase 5: OCR And Post-Processing Tuning
 

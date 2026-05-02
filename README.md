@@ -39,8 +39,23 @@ Useful environment variables:
 ```bash
 export PLATVISION_YOLO_MODEL=models/best.pt
 export PLATVISION_ENABLE_DEMO_FALLBACK=true
+export PLATVISION_ENABLE_TAX_LOOKUP=true
+export PLATVISION_TAX_LOOKUP_TIMEOUT=8
 export PLATVISION_MAX_CONTENT_LENGTH=8388608
+export PLATVISION_YOLO_CONFIDENCE=0.10
 ```
+
+The optional tax lookup currently targets the official South Sumatra/BG endpoint and is intended for a local demo.
+
+## Detector Training
+
+Prepare a YOLO dataset under `datasets/platvision-id/`, then train:
+
+```bash
+platvision-train-detector --data datasets/platvision-id.yaml --output models/best.pt
+```
+
+See `docs/training/yolo-training.md` and `docs/training/dataset-notes.md` before using a Kaggle dataset.
 
 ## API
 

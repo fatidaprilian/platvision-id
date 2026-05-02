@@ -23,6 +23,8 @@ class FakeAlprService:
             ),
             ocr_engine="fake-ocr",
             notes=(),
+            crop_preview="data:image/jpeg;base64,ZmFrZQ==",
+            diagnostics={"primaryDetections": 1, "selectedConfidence": 0.9},
         )
 
 
@@ -34,6 +36,8 @@ def app():
         yolo_model_path="yolo26n.pt",
         yolo_confidence=0.25,
         enable_demo_fallback=True,
+        enable_tax_lookup=False,
+        tax_lookup_timeout=8,
     )
     return create_app(config, FakeAlprService())
 
@@ -62,6 +66,8 @@ def test_recognize_returns_plate_response(client) -> None:
     assert payload["normalizedPlate"] == "D 1234 ABC"
     assert payload["region"]["name"] == "Bandung Raya"
     assert payload["diagnostics"]["detector"] == "fake-yolo"
+    assert payload["diagnostics"]["primaryDetections"] == 1
+    assert payload["cropPreview"].startswith("data:image/jpeg;base64,")
 
 
 def test_recognize_rejects_unsupported_extension(client) -> None:

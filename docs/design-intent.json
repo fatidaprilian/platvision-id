@@ -8,11 +8,11 @@
     "architectureConstraint": "single deployable Flask monolith with feature-oriented ALPR module"
   },
   "repoEvidence": {
-    "designEvidenceSummary": "No application UI existed before this implementation. The design contract is derived from the requested ALPR upload and recognition workflow."
+    "designEvidenceSummary": "The UI is a Flask-rendered upload and recognition workspace. The design contract is derived from the requested ALPR upload and recognition workflow, including visible localization, OCR crop inspection, and an optional official-source tax lookup panel or manual source link."
   },
   "motionPaletteDecision": {
     "productCategorySignal": "inspection workflow",
-    "densityDecisionSource": "Short demo task with one upload action, one recognition result, and compact diagnostics.",
+    "densityDecisionSource": "Short demo task with one upload action, one recognition result, compact diagnostics, and secondary official-source tax details when available.",
     "requiredInteractionStates": [
       "default",
       "hover",
@@ -40,7 +40,7 @@
     "agentResearchMode": "synthesized from current product brief and official library documentation",
     "sourceDomain": "industrial inspection instrumentation",
     "specificReferencePoint": "matte inspection bench, illuminated scan lane, and calibrated measurement readout",
-    "rationale": "The user needs to inspect an uploaded vehicle image, understand where the plate was localized, and trust the OCR confidence and fallback notes.",
+    "rationale": "The user needs to inspect an uploaded vehicle image, understand where the plate was localized, see the crop read by OCR, trust the OCR confidence and fallback notes, and optionally inspect official tax lookup fields or a manual official source in a secondary readout.",
     "signatureMotion": "A short horizontal scan-line reveal runs across the preview and result surface after recognition; reduced motion switches to an immediate state update.",
     "typographicDecision": "Plate text uses a monospace readout style, labels use compact sans-serif metadata, and body text stays plain for clarity.",
     "derivedTokenLogic": {
@@ -52,7 +52,8 @@
     "cohesionChecks": [
       "no-dashboard-mental-model",
       "motion-derived-from-anchor",
-      "fallback-state-visible"
+      "fallback-state-visible",
+      "tax-lookup-secondary-to-alpr-result"
     ]
   },
   "derivedTokenLogic": {
@@ -137,7 +138,7 @@
     "touchTargetMinPx": 44,
     "mutationRules": {
       "mobile": "Upload first, plate result second, diagnostics disclosed below.",
-      "tablet": "Stack upload and result, keep metrics in a compact row.",
+      "tablet": "Stack upload and result, keep metrics and tax lookup fields in compact rows.",
       "desktop": "Use two primary columns with upload on the left and result inspection on the right."
     }
   },
@@ -153,6 +154,9 @@
   },
   "reviewRubric": [
     "The UI shows fallback state clearly.",
+    "The preview bounding box aligns with the displayed image after responsive resizing.",
+    "The crop preview makes the OCR input visible when the service returns an encoded crop.",
+    "The optional tax lookup panel is visually secondary and labels its official source.",
     "Plate text is visually distinct as data.",
     "Responsive layout recomposes instead of only shrinking.",
     "Motion follows the scan-lane anchor and respects reduced motion.",

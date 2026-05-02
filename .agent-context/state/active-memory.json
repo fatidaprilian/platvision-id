@@ -8,12 +8,13 @@
   },
   "project": {
     "name": "platvision-id",
-    "currentFocus": "Dockerized Flask ALPR demo using Ultralytics YOLO and PaddleOCR adapters.",
+    "currentFocus": "Dockerized Flask ALPR demo with visible localization, OCR crop preview, Ultralytics YOLO adapter, PaddleOCR adapter, demo fallback, and optional South Sumatra/BG tax lookup.",
     "durableFacts": [
       "Runtime is Python Flask with a feature-oriented ALPR module under src/platvision_id/modules/alpr.",
       "Docker is the recommended demo path because YOLO/PyTorch/PaddleOCR/PaddlePaddle dependencies are heavy.",
       "The app prefers models/best.pt when present and otherwise uses a controlled demo fallback crop instead of depending on generic YOLO downloads.",
-      "The Docker ML lane pins paddleocr==3.3.3 with paddlepaddle==3.2.0 to avoid a Paddle CPU oneDNN runtime failure seen with newer PaddlePaddle."
+      "The Docker ML lane pins paddleocr==3.3.3 with paddlepaddle==3.2.0 to avoid a Paddle CPU oneDNN runtime failure seen with newer PaddlePaddle.",
+      "Optional tax lookup is enabled by PLATVISION_ENABLE_TAX_LOOKUP; BG plates use the official Bapenda Sumsel page, while known captcha/app-based regions return manual official source links."
     ]
   },
   "progress": {
@@ -21,14 +22,19 @@
       "Initialized the local git repository, configured the local author as fatidaprilian, and pushed main to git@github.com:fatidaprilian/platvision-id.git.",
       "Created required project docs, API contract, design contract, Flask app scaffold, ALPR pipeline adapters, UI, tests, Dockerfile, compose.yaml, and Docker runbook.",
       "Split Docker lanes into development, production, and lightweight test targets; built all three images successfully.",
-      "Fixed the image recognition 500 error by pinning compatible OCR dependencies, returning UNREADABLE instead of crashing on OCR runtime failure, and using demo fallback when no trained YOLO plate model exists."
+      "Fixed the image recognition 500 error by pinning compatible OCR dependencies, returning UNREADABLE instead of crashing on OCR runtime failure, and using demo fallback when no trained YOLO plate model exists.",
+      "Added API cropPreview support plus browser bounding-box overlay and plate-crop inspection for clearer demo feedback.",
+      "Improved DemoFallbackDetector from a fixed center-lower crop to a plate-like bright-region heuristic with fixed-crop fallback.",
+      "Added YOLO training scaffold: datasets/platvision-id.yaml, dataset workspace placeholders, training docs, and platvision-train-detector CLI that copies the trained best weights to models/best.pt.",
+      "Added optional Bapenda Sumsel tax lookup and manual official source links for selected regions to the ALPR service, API response, UI result panel, docs, and tests."
     ],
     "pendingIssues": [
-      "Accurate plate localization requires a trained license plate YOLO model at models/best.pt."
+      "The trained detector exists locally at models/best.pt; keep it local unless the repo intentionally tracks model artifacts."
     ],
     "nextBestActions": [
-      "Retry browser upload at http://localhost:5000 and confirm the UI shows a result instead of server error.",
-      "Place a trained license plate detector at models/best.pt before evaluating detection accuracy."
+      "Refresh the browser at http://localhost:5000 and confirm BG lookup now shows owner/address as Not provided when the official source omits them.",
+      "Record model training metrics from Colab output in docs/training/dataset-notes.md or a future evaluation report.",
+      "If the app is ever deployed, revisit the tax lookup privacy policy before showing owner or address fields."
     ],
     "validationState": [
       "docker compose config passed.",
@@ -39,8 +45,16 @@
       "docker compose --profile production build production passed.",
       "Development container is running and Docker healthcheck is healthy.",
       "In-container recognition smoke test returned 200 with normalizedPlate B 2156 TOR using demo-fallback and PaddleOCR.",
+      "After crop-preview UI changes, docker compose --profile test build test passed and docker compose --profile test run --rm test passed with 9 tests.",
+      "After restarting development, docker compose ps reported the development container healthy and an in-container API smoke test returned 200 with cropPreview true.",
+      "After fallback detector tuning, synthetic upper-plate API smoke test returned 200 with normalizedPlate F 6797 BB, cropPreview true, and box y1=65 y2=206.",
+      "After fallback detector tuning, docker compose --profile test build test passed and docker compose --profile test run --rm test passed with 9 tests.",
+      "After adding training scaffold, python3 -m compileall src tests passed, docker compose --profile test run --rm test passed with 11 tests, and platvision-train-detector --help worked in the test container.",
+      "After placing models/best.pt locally, the development service selected UltralyticsPlateDetector /app/models/best.pt and an API smoke test on test001.jpg returned 200 with detector ultralytics, fallbackUsed false, and normalizedPlate B 2842 PKM.",
       "python3 -m compileall src tests passed before initial git push.",
-      "Initial commit b85ce99 was pushed to origin/main."
+      "Initial commit b85ce99 was pushed to origin/main.",
+      "After adding tax lookup, python3 -m compileall src tests passed, node --check src/platvision_id/static/app.js passed, docker compose --profile test run --rm test passed with 16 tests, development container healthcheck was healthy, and an in-container dummy BG lookup returned not_found from Bapenda Sumsel.",
+      "After correcting Sumsel field mapping and adding manual source links, python3 -m compileall src tests passed, docker compose --profile test run --rm test passed with 17 tests, and in-container BG 1352 AE lookup returned owner/address not provided with paymentStatus amount_due."
     ]
   },
   "designContinuity": {
@@ -58,5 +72,5 @@
     "redactSensitiveTextBeforeWriting": true
   },
   "generatedAt": "2026-04-27T01:58:44.514Z",
-  "lastUpdatedAt": "2026-05-01T16:45:49+07:00"
+  "lastUpdatedAt": "2026-05-01T10:24:00-05:00"
 }

@@ -21,6 +21,14 @@ class GenericDetector:
         ]
 
 
+class EmptyPlateDetector:
+    name = "ultralytics"
+    uses_generic_demo_model = False
+
+    def detect(self, image):
+        return []
+
+
 class WorkingOcrReader:
     name = "fake-ocr"
 
@@ -33,6 +41,16 @@ class FailingOcrReader:
 
     def read(self, variants):
         raise RuntimeError("ocr runtime failed")
+
+
+class FakeTaxLookup:
+    def lookup(self, normalized_plate: str):
+        return {
+            "supported": True,
+            "status": "found",
+            "source": "Bapenda Sumsel",
+            "message": f"lookup for {normalized_plate}",
+        }
 
 
 class FakeImage:
@@ -75,11 +93,45 @@ def test_default_service_uses_fallback_primary_when_generic_yolo_file_is_missing
         yolo_model_path="yolo26n.pt",
         yolo_confidence=0.25,
         enable_demo_fallback=True,
+        enable_tax_lookup=False,
+        tax_lookup_timeout=8,
     )
 
     service = build_default_service(config)
 
     assert isinstance(service.detector, DemoFallbackDetector)
+
+
+def test_primary_detector_miss_is_reported_in_diagnostics(monkeypatch) -> None:
+    _patch_image_pipeline(monkeypatch)
+    service = AlprService(
+        detector=EmptyPlateDetector(),
+        ocr_reader=WorkingOcrReader(),
+        fallback_detector=DemoFallbackDetector(),
+    )
+
+    recognition = service.recognize(_sample_image_bytes())
+    payload = recognition.to_api_response()
+
+    assert recognition.detection.fallback_used is True
+    assert payload["diagnostics"]["primaryDetector"] == "ultralytics"
+    assert payload["diagnostics"]["primaryDetections"] == 0
+    assert payload["diagnostics"]["selectedDetector"] == "demo-fallback"
+
+
+def test_tax_lookup_is_attached_when_plate_is_readable(monkeypatch) -> None:
+    _patch_image_pipeline(monkeypatch)
+    service = AlprService(
+        detector=EmptyPlateDetector(),
+        ocr_reader=WorkingOcrReader(),
+        fallback_detector=DemoFallbackDetector(),
+        tax_lookup=FakeTaxLookup(),
+    )
+
+    payload = service.recognize(_sample_image_bytes()).to_api_response()
+
+    assert payload["tax"]["status"] == "found"
+    assert payload["tax"]["message"] == "lookup for B 2156 TOR"
 
 
 def _sample_image_bytes() -> bytes:

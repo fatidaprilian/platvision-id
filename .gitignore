@@ -10,5 +10,15 @@ __pycache__/
 models/*.onnx
 uploads/
 output/
+datasets/platvision-id/images/**
+datasets/platvision-id/labels/**
+datasets/platvision-id/labelswithLP/**
+!datasets/platvision-id/images/**/
+!datasets/platvision-id/labels/**/
+!datasets/platvision-id/labelswithLP/**/
+!datasets/platvision-id/images/**/.gitkeep
+!datasets/platvision-id/labels/**/.gitkeep
+!datasets/platvision-id/labelswithLP/**/.gitkeep
+runs/
 .env
 .DS_Store

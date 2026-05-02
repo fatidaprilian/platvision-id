@@ -9,7 +9,10 @@ services:
       - "5000:5000"
     environment:
       PLATVISION_ENABLE_DEMO_FALLBACK: "true"
+      PLATVISION_ENABLE_TAX_LOOKUP: "true"
+      PLATVISION_TAX_LOOKUP_TIMEOUT: "8"
       PLATVISION_MAX_CONTENT_LENGTH: "8388608"
+      PLATVISION_YOLO_CONFIDENCE: "0.10"
       DISABLE_MODEL_SOURCE_CHECK: "True"
     volumes:
       - ./src:/app/src
@@ -29,7 +32,10 @@ services:
       - "5000:8000"
     environment:
       PLATVISION_ENABLE_DEMO_FALLBACK: "true"
+      PLATVISION_ENABLE_TAX_LOOKUP: "true"
+      PLATVISION_TAX_LOOKUP_TIMEOUT: "8"
       PLATVISION_MAX_CONTENT_LENGTH: "8388608"
+      PLATVISION_YOLO_CONFIDENCE: "0.10"
       DISABLE_MODEL_SOURCE_CHECK: "True"
     volumes:
       - ./models:/app/models:ro
@@ -48,5 +54,6 @@ services:
       target: test
     environment:
       PLATVISION_ENABLE_DEMO_FALLBACK: "true"
+      PLATVISION_ENABLE_TAX_LOOKUP: "false"
     profiles:
       - test

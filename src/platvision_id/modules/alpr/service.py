@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 from pathlib import Path
 
 from ...config import AppConfig
@@ -10,6 +11,7 @@ from .ocr import PaddleOcrReader, PlateOcrReader
 from .postprocessing import choose_best_plate_candidate, extract_region_code
 from .preprocessing import build_plate_variants, crop_plate, decode_image
 from .region_lookup import lookup_region
+from .tax_lookup import OfficialTaxLookup, TaxLookup
 
 
 class AlprService:
@@ -18,17 +20,24 @@ class AlprService:
         detector: PlateDetector,
         ocr_reader: PlateOcrReader,
         fallback_detector: PlateDetector | None = None,
+        tax_lookup: TaxLookup | None = None,
     ) -> None:
         self.detector = detector
         self.ocr_reader = ocr_reader
         self.fallback_detector = fallback_detector
+        self.tax_lookup = tax_lookup
 
     def recognize(self, image_bytes: bytes) -> PlateRecognition:
         image = decode_image(image_bytes)
         notes: list[str] = []
+        primary_detector_name = self.detector.name
+        primary_detection_count = 0
+        primary_best_confidence: float | None = None
 
         try:
             detections = self.detector.detect(image)
+            primary_detection_count = len(detections)
+            primary_best_confidence = max((detection.confidence for detection in detections), default=None)
         except Exception:
             if self.fallback_detector is None:
                 raise
@@ -69,6 +78,8 @@ class AlprService:
 
         region = lookup_region(extract_region_code(normalized_plate))
         confidence = _combined_confidence(selected_detection.confidence, best_candidate)
+        crop_preview = _encode_crop_preview(plate_crop)
+        tax_info = self._lookup_tax(normalized_plate, notes)
 
         return PlateRecognition(
             raw_text=best_candidate.text if best_candidate else "",
@@ -78,7 +89,30 @@ class AlprService:
             detection=selected_detection,
             ocr_engine=self.ocr_reader.name,
             notes=tuple(notes),
+            crop_preview=crop_preview,
+            diagnostics={
+                "primaryDetector": primary_detector_name,
+                "primaryDetections": primary_detection_count,
+                "primaryBestConfidence": round(primary_best_confidence, 4) if primary_best_confidence is not None else None,
+                "selectedDetector": selected_detection.detector_name,
+                "selectedConfidence": round(selected_detection.confidence, 4),
+            },
+            tax_info=tax_info,
         )
+
+    def _lookup_tax(self, normalized_plate: str, notes: list[str]) -> dict[str, object] | None:
+        if self.tax_lookup is None or normalized_plate == "UNREADABLE":
+            return None
+        try:
+            return self.tax_lookup.lookup(normalized_plate)
+        except Exception:
+            notes.append("Tax lookup failed at runtime, but ALPR recognition completed.")
+            return {
+                "supported": True,
+                "status": "lookup_failed",
+                "source": "Bapenda Sumsel",
+                "message": "Tax lookup failed at runtime.",
+            }
 
 
 def build_default_service(config: AppConfig) -> AlprService:
@@ -87,6 +121,7 @@ def build_default_service(config: AppConfig) -> AlprService:
         return AlprService(
             detector=fallback_detector,
             ocr_reader=PaddleOcrReader(),
+            tax_lookup=OfficialTaxLookup(config.tax_lookup_timeout) if config.enable_tax_lookup else None,
         )
 
     return AlprService(
@@ -96,6 +131,7 @@ def build_default_service(config: AppConfig) -> AlprService:
         ),
         ocr_reader=PaddleOcrReader(),
         fallback_detector=fallback_detector,
+        tax_lookup=OfficialTaxLookup(config.tax_lookup_timeout) if config.enable_tax_lookup else None,
     )
 
 
@@ -114,3 +150,16 @@ def _should_prefer_demo_fallback(detector: PlateDetector, detections) -> bool:
 def _should_use_fallback_as_primary(model_path: str) -> bool:
     model_name = Path(model_path).name
     return model_name.startswith("yolo") and model_name.endswith(".pt") and not Path(model_path).exists()
+
+
+def _encode_crop_preview(crop) -> str | None:
+    try:
+        import cv2
+
+        success, encoded = cv2.imencode(".jpg", crop, [int(cv2.IMWRITE_JPEG_QUALITY), 82])
+    except Exception:
+        return None
+    if not success:
+        return None
+    image_base64 = base64.b64encode(encoded.tobytes()).decode("ascii")
+    return f"data:image/jpeg;base64,{image_base64}"

@@ -11,6 +11,7 @@ Platvision ID is a demo Automatic License Plate Recognition (ALPR) web applicati
 - The app must expose a small Flask web interface and JSON API for image upload.
 - The ALPR flow must include detection, localization, preprocessing, recognition, and post-processing.
 - PaddleOCR is the preferred OCR engine because it is more suitable for varied plate typography than a basic Tesseract-only flow.
+- The local demo may optionally query the official South Sumatra tax lookup for BG plates and show the returned due date, amount, vehicle fields, and owner or address fields only when the source provides them.
 
 ## Assumptions To Validate
 
@@ -18,6 +19,7 @@ Platvision ID is a demo Automatic License Plate Recognition (ALPR) web applicati
 - A pretrained generic YOLO model can prove the integration path, but accurate plate localization requires a trained license plate model.
 - The application does not need login, persistent storage, or streaming video in the first version.
 - Uploaded images are short-lived request inputs, not records to keep in a database.
+- The optional tax lookup depends on an external public website and can fail independently from ALPR recognition.
 
 ## User Workflow
 
@@ -28,6 +30,7 @@ Platvision ID is a demo Automatic License Plate Recognition (ALPR) web applicati
 5. OCR reads the crop.
 6. The server normalizes the plate text and maps the plate prefix to a region.
 7. The UI shows the detected text, region, confidence, and pipeline notes.
+8. If the plate is a BG plate, the UI can show optional tax lookup data returned by the official South Sumatra source. For other known regions, the UI links to the official source when automated lookup requires captcha, an app flow, or extra owner data.
 
 ## Non-Goals For Version 1
 
@@ -36,10 +39,15 @@ Platvision ID is a demo Automatic License Plate Recognition (ALPR) web applicati
 - No account system.
 - No training UI.
 - No production deployment automation.
+- No broad national tax lookup scraping. The first automated tax lookup adapter is limited to South Sumatra/BG; other known regions are linked as manual official sources unless a safe public endpoint is available.
 
 ## Demo Model Policy
 
-The app defaults to `models/best.pt` when that file exists. If it is missing, the app can use `yolo26n.pt` through the Ultralytics package, but the local demo does not depend on downloading that file. A controlled demo fallback crops the center-lower image area when no trained plate model is available, and the API marks that result as a fallback.
+The app defaults to `models/best.pt` when that file exists. If it is missing, the app can use `yolo26n.pt` through the Ultralytics package, but the local demo does not depend on downloading that file. A controlled demo fallback uses a simple plate-like bright-region heuristic and then falls back to a fixed crop when no trained plate model is available. The API marks that result as a fallback.
+
+## Training Handoff
+
+The expected training output is `models/best.pt`. Dataset preparation lives under `datasets/`, and training notes live under `docs/training/`. After a Kaggle dataset is selected and converted to YOLO format, `platvision-train-detector` can fine-tune YOLO weights and copy the best run artifact to `models/best.pt`.
 
 ## Validation Strategy
 

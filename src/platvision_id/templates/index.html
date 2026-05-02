@@ -27,6 +27,7 @@
           </label>
           <div class="preview-frame" data-empty="true">
             <img id="preview-image" alt="">
+            <span class="bbox-overlay" id="bbox-overlay" hidden></span>
             <span class="preview-empty">Image preview</span>
           </div>
           <button class="primary-action" type="submit">Run recognition</button>
@@ -52,6 +53,43 @@
               <dd id="detector-output">-</dd>
             </div>
           </dl>
+          <section class="tax-lookup" id="tax-lookup" hidden>
+            <div class="tax-header">
+              <p class="eyebrow">Official tax lookup</p>
+              <a id="tax-source-link" href="#" target="_blank" rel="noreferrer">Source</a>
+            </div>
+            <dl class="tax-grid">
+              <div>
+                <dt>Status</dt>
+                <dd id="tax-status">-</dd>
+              </div>
+              <div>
+                <dt>Due date</dt>
+                <dd id="tax-due-date">-</dd>
+              </div>
+              <div>
+                <dt>Total</dt>
+                <dd id="tax-total">-</dd>
+              </div>
+              <div>
+                <dt>Owner</dt>
+                <dd id="tax-owner">-</dd>
+              </div>
+              <div>
+                <dt>Address</dt>
+                <dd id="tax-address">-</dd>
+              </div>
+              <div>
+                <dt>Vehicle</dt>
+                <dd id="tax-vehicle">-</dd>
+              </div>
+            </dl>
+            <p class="tax-message" id="tax-message">No tax lookup yet.</p>
+          </section>
+          <figure class="crop-inspection" id="crop-inspection" hidden>
+            <figcaption>Plate crop</figcaption>
+            <img id="crop-preview" alt="Detected plate crop">
+          </figure>
           <div class="notes" id="notes-output">No diagnostics yet.</div>
         </section>
       </section>

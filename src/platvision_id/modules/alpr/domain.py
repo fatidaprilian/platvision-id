@@ -60,19 +60,31 @@ class PlateRecognition:
     detection: Detection
     ocr_engine: str
     notes: tuple[str, ...]
+    crop_preview: str | None = None
+    diagnostics: dict[str, object] | None = None
+    tax_info: dict[str, object] | None = None
 
     def to_api_response(self) -> dict[str, object]:
-        return {
+        diagnostics: dict[str, object] = {
+            "detector": self.detection.detector_name,
+            "ocr": self.ocr_engine,
+            "fallbackUsed": self.detection.fallback_used,
+            "notes": list(self.notes),
+        }
+        if self.diagnostics:
+            diagnostics.update(self.diagnostics)
+
+        response: dict[str, object] = {
             "plate": self.normalized_plate,
             "normalizedPlate": self.normalized_plate,
             "rawText": self.raw_text,
             "region": self.region.to_api_response(),
             "confidence": round(self.confidence, 4),
             "box": self.detection.box.to_api_response(),
-            "diagnostics": {
-                "detector": self.detection.detector_name,
-                "ocr": self.ocr_engine,
-                "fallbackUsed": self.detection.fallback_used,
-                "notes": list(self.notes),
-            },
+            "diagnostics": diagnostics,
         }
+        if self.crop_preview:
+            response["cropPreview"] = self.crop_preview
+        if self.tax_info:
+            response["tax"] = self.tax_info
+        return response

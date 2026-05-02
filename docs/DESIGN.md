@@ -10,7 +10,8 @@ The main users are students, lecturers, and demo evaluators. They need fast uplo
 
 ## Visual Direction and Distinctive Moves
 
-The conceptual anchor is a vehicle inspection lightbox: a matte workbench, a bright scan lane, and measured result readouts. The distinctive move is a horizontal scan reveal over the upload preview and result panel after recognition.
+The conceptual anchor is a vehicle inspection lightbox: a matte workbench, a bright scan lane, and measured result readouts. The distinctive move is a horizontal scan reveal over the upload preview and result panel after recognition. The result view also shows a measured localization box and plate crop so the evaluator can see what the model handed to OCR.
+The optional tax lookup appears as a compact official-source strip below the recognition metrics, not as a primary result. This keeps ALPR confidence and localization as the first read while still exposing registry data or official source links for local demos.
 
 ## Color, Typography, Spacing, and Density Decisions
 
@@ -30,7 +31,8 @@ Motion is light and functional. Upload hover should show an inspection-lane high
 
 ## Component Language, States, and Morphology
 
-Controls should be rectangular with small radii, clear borders, and strong focus states. Required states are default, hover, focus-visible, active, disabled, loading, empty, error, success, and transition.
+Controls should be rectangular with small radii, clear borders, and strong focus states. Required states are default, hover, focus-visible, active, disabled, loading, empty, error, success, and transition. The localization overlay is a measurement aid, not decoration; it must align to the displayed image after responsive resizing and remain hidden until the API returns a bounding box.
+The tax lookup panel uses the same measured metadata language as the detector metrics. Owner and address fields must wrap cleanly, show a clear "not provided" state when absent, and remain visually secondary to the recognized plate.
 
 ## Source Boundaries and Context Hygiene
 
@@ -47,3 +49,4 @@ Avoid decorative gradients, oversized marketing heroes, generic card grids, and 
 ## Implementation Notes for Future UI Tasks
 
 Keep the UI dependency-free until a stronger frontend requirement appears. Native HTML, CSS, and a small amount of JavaScript are enough for version 1.
+Tax lookup is an optional local-demo disclosure. Do not make it look like a guaranteed national registry check.

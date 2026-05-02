@@ -27,6 +27,7 @@ ml = [
 
 [project.scripts]
 platvision-id = "platvision_id.app:main"
+platvision-train-detector = "platvision_id.training:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

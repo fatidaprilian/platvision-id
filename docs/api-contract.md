@@ -48,14 +48,44 @@ Limits:
     "x2": 420,
     "y2": 330
   },
+  "cropPreview": "data:image/jpeg;base64,...",
   "diagnostics": {
     "detector": "ultralytics",
     "ocr": "paddleocr",
     "fallbackUsed": false,
     "notes": []
+  },
+  "tax": {
+    "supported": true,
+    "status": "found",
+    "source": "Bapenda Sumsel",
+    "sourceUrl": "https://bapenda.sumselprov.go.id/cek_pajak/t_ulang",
+    "message": "Vehicle tax data was returned by the official source.",
+    "paymentStatus": "amount_due",
+    "registeredPlate": "BG1352AE",
+    "ownerName": "EXAMPLE OWNER",
+    "ownerAddress": "EXAMPLE ADDRESS",
+    "taxDueDate": "01-09-2026",
+    "stnkExpiryDate": "01-09-2028",
+    "vehicleBrand": "TOYOTA",
+    "vehicleModel": "INNOVA",
+    "vehicleYear": "2021",
+    "totalDue": "2.243.000,00"
   }
 }
 ```
+
+`cropPreview` is optional. When present, it is a small JPEG data URL of the detected plate crop used by OCR so the browser can show what the recognition step actually read.
+
+`tax` is optional. It is returned only when the tax lookup adapter is enabled and the recognized plate can be checked or rejected by that adapter. Current status values are:
+
+- `found`: the official source returned vehicle tax data.
+- `not_found`: the official source returned no matching vehicle data.
+- `manual_source_only`: the region has an official source, but automated lookup is not used because the flow requires captcha, an app, or extra owner data.
+- `unsupported_region`: the normalized plate is outside the adapter's supported region.
+- `lookup_failed`: the official source could not be reached or parsed safely.
+
+The first automated adapter supports South Sumatra/BG plates through the official Bapenda Sumsel lookup page. Owner and address fields may be present in local demo responses only when the official source returns them.
 
 ### Error Response
 
@@ -83,3 +113,4 @@ Known error codes:
 - The API does not store uploaded files permanently.
 - The API does not expose server file paths, model stack traces, or provider internals.
 - The endpoint has no authentication in version 1 because it is a local demo surface.
+- Optional tax lookup data may include personal data from an external official source. Keep this feature local unless privacy, consent, and legal requirements are reviewed.

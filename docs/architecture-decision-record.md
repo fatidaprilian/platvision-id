@@ -50,10 +50,47 @@ The user asked for the newest YOLO path as long as it is available for demo. Lat
 
 ### Decision
 
-Use `models/best.pt` when present. Otherwise use `yolo26n.pt` to keep the demo runnable through the Ultralytics package. If no detection is usable and `PLATVISION_ENABLE_DEMO_FALLBACK=true`, crop the center-lower region and mark the result as `fallback`.
+Use `models/best.pt` when present. Otherwise use `yolo26n.pt` to keep the demo runnable through the Ultralytics package. If no detection is usable and `PLATVISION_ENABLE_DEMO_FALLBACK=true`, use a simple plate-like bright-region fallback, then fall back to a fixed center-lower crop, and mark the result as `fallback`.
 
 ### Consequences
 
 - The demo can run before a custom model is available.
 - Result metadata clearly warns when a fallback crop was used.
 - Replacing the detector with a trained Roboflow/CVAT/Label Studio model only changes configuration, not the app flow.
+
+## ADR-003: Training Handoff Through `models/best.pt`
+
+Status: Accepted for the first training workflow.
+
+### Context
+
+The demo needs a clear path from a later Kaggle dataset to the detector used by the Flask app. Training is not part of request-time inference, and the web app should not know about dataset cleaning or training run directories.
+
+### Decision
+
+Keep training as a separate CLI entrypoint named `platvision-train-detector`. The command fine-tunes Ultralytics YOLO weights with `datasets/platvision-id.yaml` and copies the run's `weights/best.pt` artifact to `models/best.pt`.
+
+### Consequences
+
+- The web app remains focused on upload, localization, OCR, and region lookup.
+- Dataset files stay local and ignored by git unless explicitly safe to publish.
+- The model handoff is stable: the app already prefers `models/best.pt`.
+- Training can happen on a GPU environment without changing the Flask runtime.
+
+## ADR-004: Optional Official Tax Lookup Adapter
+
+Status: Accepted for local demo only.
+
+### Context
+
+The user asked whether the demo could check vehicle tax details after plate recognition. South Sumatra exposes a public BG plate lookup page that returns tax and vehicle fields. The response can include owner name and address, so the feature is sensitive even when the app is not deployed.
+
+### Decision
+
+Add a small synchronous adapter for the official Bapenda Sumsel lookup source. The adapter is enabled by `PLATVISION_ENABLE_TAX_LOOKUP`, automates BG plates only, and returns a safe `tax.status` when the source is unsupported, empty, manual-only, or unavailable. Known regions such as West Java, Central Java, East Java, Banten, and DKI Jakarta can be linked as manual official sources when their public flow requires captcha, an app, or extra owner data. The ALPR request still succeeds when tax lookup fails.
+
+### Consequences
+
+- The local demo can show tax due date, amount, vehicle details, and owner or address only when the official source provides those fields.
+- The feature does not add persistence or accounts.
+- Production use would need privacy, consent, rate-limit, and legal review before exposing owner or address fields.

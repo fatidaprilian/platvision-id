@@ -12,7 +12,8 @@
 8. The OCR reader evaluates the crop variants.
 9. The post-processing step normalizes text into an Indonesian plate pattern.
 10. The region lookup maps the plate prefix to a likely registration area.
-11. The API returns plate text, region, confidence, bounding box, and pipeline notes.
+11. If enabled and the normalized plate is a BG plate, the service posts the numeric and suffix plate parts to the official South Sumatra lookup source.
+12. The API returns plate text, region, confidence, bounding box, optional crop preview, optional tax lookup data, and pipeline notes.
 
 ## Error Flow
 
@@ -40,3 +41,15 @@
 ## Demo Limitation
 
 The fallback YOLO model is a generic detector. It keeps the app demonstrable, but accurate plate localization requires a trained license plate detector saved as `models/best.pt`.
+
+## Demo Inspection Feedback
+
+The browser overlays the returned bounding box on the uploaded image and shows the cropped plate image used by OCR when the service can encode it. This keeps the demo understandable when a fallback crop is used or OCR returns an unreadable result.
+
+## Optional Tax Lookup Flow
+
+- `PLATVISION_ENABLE_TAX_LOOKUP=true` enables the lookup adapter.
+- The automated adapter supports BG plates only.
+- Known regions such as West Java, East Java, Central Java, Banten, and DKI Jakarta can return a manual official source link when their public flow requires captcha, an app, or extra owner data.
+- Tax lookup errors do not fail the ALPR request. The API returns a `tax.status` value such as `found`, `not_found`, `manual_source_only`, `unsupported_region`, or `lookup_failed`.
+- Returned owner and address fields are shown only when the official source provides them. This is acceptable for the local demo, but production use would need explicit privacy and legal review.
